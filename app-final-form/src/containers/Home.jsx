@@ -21,12 +21,10 @@ const validate = () => {
   //code here
 }
 
-
-
 export default Register => {
 
   const [weekday, setWeekday] = useState([])
-  
+  const [dia, setDia] = useState('')
 
   useEffect(() => {
     axios.get('http://localhost:3000/weekdays')
@@ -34,6 +32,12 @@ export default Register => {
         setWeekday(data)
       })
   }, [])
+
+  const retornaDiaSemana = evt => {
+    const dia = evt.target.value
+    const diaSemana = weekday.find(d => d.value == dia)
+    setDia(diaSemana.text)
+  }
 
   return (
     <Container>
@@ -51,11 +55,17 @@ export default Register => {
                   <br/>
                   <br/>
 
-                  <Field name="weekday" component="select">
+                  <Field
+                    name="weekday"
+                    component="select"
+                    onChange={retornaDiaSemana}
+                  >
                     {weekday.map(item => 
                       <option key={item.value} value={item.value}>{ item.text }</option>
                     )}
                   </Field>
+
+                  <p>Dia da semana: { dia }</p>
                 </div>
 
                 <h2>Custom Input Component</h2>

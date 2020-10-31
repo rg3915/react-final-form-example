@@ -1,39 +1,73 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import { Form, Field } from 'react-final-form'
-import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Button from 'react-bootstrap/Button';
+
+import TextInput from '../components/TextInput'
+
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const onSubmit = async values => {
   await sleep(300)
-  console.log(values);
+  console.table(values);
 }
 
 const validate = () => {
   //code here
 }
 
+
+
 export default Register => {
+
+  const [weekday, setWeekday] = useState([])
+  
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/weekdays')
+      .then(({ data }) => {
+        setWeekday(data)
+      })
+  }, [])
+
   return (
     <Container>
-      <Form
-        onSubmit={onSubmit}
-        validate={validate}
-        render={({ handleSubmit }) => (
-          <form onSubmit={handleSubmit}>
-            <h2>Simple Default Input</h2>
-            <div>
-              <label>First Name</label>
-              <Field name="firstName" component="input" placeholder="First Name" />
-            </div>
+      <Row>
+        <Col>
+          <Form
+            onSubmit={onSubmit}
+            validate={validate}
+            render={({ handleSubmit, values }) => (
+              <form onSubmit={handleSubmit}>
+                <h2>Simple Default Input</h2>
+                <div>
+                  <Field name="firstName" component="input" placeholder="First Name" />
 
-            <h2>Reusable Input Component</h2>
+                  <br/>
+                  <br/>
 
-            <button type="submit">Submit</button>
-          </form>
-        )
-        }
-      />
+                  <Field name="weekday" component="select">
+                    {weekday.map(item => 
+                      <option key={item.value} value={item.value}>{ item.text }</option>
+                    )}
+                  </Field>
+                </div>
+
+                <h2>Custom Input Component</h2>
+
+                <TextInput name="name" placeholder="Name" />
+                <TextInput name="phrase" placeholder="Type a phrase" />
+
+                <Button type="submit" variant="primary">Salvar</Button>
+              </form>
+            )}
+          />
+        </Col>
+      </Row>
     </Container>
   )
 }

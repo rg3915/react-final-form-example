@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button';
 
 import TextInput from '../components/TextInput'
+import SelectField from '../components/SelectField'
 
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -63,6 +64,12 @@ export default Register => {
                 <TextInput name="phrase" placeholder="Type a phrase" />
                 <TextInput name="email" type="email" label="email" placeholder="E-mail" />
                 <TextInput name="comment" type="textarea" placeholder="Type a comment..." />
+
+                <SelectField name="customWeekday">
+                  {weekday.map(item => 
+                    <option key={item.value} value={item.value}>{ item.text }</option>
+                  )}
+                </SelectField>
 
                 <Button type="submit" variant="primary">Salvar</Button>
               </form>

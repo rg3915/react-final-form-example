@@ -1,0 +1,11 @@
+{
+  "weekdays": [
+    { "value": 1, "text": "Domingo" },
+    { "value": 2, "text": "Segunda" },
+    { "value": 3, "text": "Terça" },
+    { "value": 4, "text": "Quarta" },
+    { "value": 5, "text": "Quinta" },
+    { "value": 6, "text": "Sexta" },
+    { "value": 7, "text": "Sábado" }
+  ]
+}

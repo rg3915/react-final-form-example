@@ -61,6 +61,8 @@ export default Register => {
 
                 <TextInput name="name" placeholder="Name" />
                 <TextInput name="phrase" placeholder="Type a phrase" />
+                <TextInput name="email" type="email" label="email" placeholder="E-mail" />
+                <TextInput name="comment" type="textarea" placeholder="Type a comment..." />
 
                 <Button type="submit" variant="primary">Salvar</Button>
               </form>

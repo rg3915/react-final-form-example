@@ -51,6 +51,17 @@ export default Register => {
     //code here
   }
 
+  const mudaRefeicao = (motivoNome, periodoNome, change, refeicao, lanche) => {
+    if (motivoNome === 'Refeição por lanche') {
+      change(`${periodoNome}.alimentacao_de`, refeicao.uuid)
+      change(`${periodoNome}.alimentacao_para`, lanche.uuid)
+    }
+    if (motivoNome === 'Lanche por refeição') {
+      change(`${periodoNome}.alimentacao_de`, lanche.uuid)
+      change(`${periodoNome}.alimentacao_para`, refeicao.uuid)
+    }
+  }
+
   const atualizaRefeicao = (valueMotivo, change, formValues) => {
     const motivo = motivos.find(d => d.uuid == valueMotivo)
     const refeicao = alimentacaoDe.find(v => v.nome === 'Refeição')
@@ -58,14 +69,7 @@ export default Register => {
 
     for (let periodo of periodos) {
       if (formValues[periodo.nome]) {
-        if (motivo.nome === 'Refeição por lanche') {
-          change(`${periodo.nome}.alimentacao_de`, refeicao.uuid)
-          change(`${periodo.nome}.alimentacao_para`, lanche.uuid)
-        }
-        if (motivo.nome === 'Lanche por refeição') {
-          change(`${periodo.nome}.alimentacao_de`, lanche.uuid)
-          change(`${periodo.nome}.alimentacao_para`, refeicao.uuid)
-        }
+        mudaRefeicao(motivo.nome, periodo.nome, change, refeicao, lanche)
       }
     }
 
@@ -75,19 +79,12 @@ export default Register => {
     if (!periodoChecado) return
 
     const motivo = motivos.find(d => d.uuid == formValues.motivo)
+    if (!motivo) return
+
     const refeicao = alimentacaoDe.find(v => v.nome === 'Refeição')
     const lanche = alimentacaoDe.find(v => v.nome === 'Lanche')
 
-    if (!motivo) return
-
-    if (motivo.nome === 'Refeição por lanche') {
-      change(`${periodoNome}.alimentacao_de`, refeicao.uuid)
-      change(`${periodoNome}.alimentacao_para`, lanche.uuid)
-    }
-    if (motivo.nome === 'Lanche por refeição') {
-      change(`${periodoNome}.alimentacao_de`, lanche.uuid)
-      change(`${periodoNome}.alimentacao_para`, refeicao.uuid)
-    }
+    mudaRefeicao(motivo.nome, periodoNome, change, refeicao, lanche)
   }
 
   return (

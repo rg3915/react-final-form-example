@@ -51,17 +51,31 @@ export default Register => {
     //code here
   }
 
-  const trocarRefeicao = (periodoChecado, change, formValues) => {
-    const motivo = motivos.find(d => d.uuid == formValues.motivo)
+  const atualizaRefeicao = (valueMotivo, change, formValues) => {
+    const motivo = motivos.find(d => d.uuid == valueMotivo)
 
-    if (motivo.nome === 'Refeição por lanche') {
-      console.log(motivo.nome);
-      change('MANHA.alimentacao_de', 'r01l22')
-      change('MANHA.alimentacao_para', 'l03r44')
-      change('TARDE.alimentacao_de', 'r01l22')
-      change('TARDE.alimentacao_para', 'l03r44')
+    for (let periodo of periodos) {
+      if (formValues[periodo.nome]) {
+        if (motivo.nome === 'Refeição por lanche') {
+          change(`${periodo.nome}.alimentacao_de`, 'r01l22')
+          change(`${periodo.nome}.alimentacao_para`, 'l03r44')
+        }
+      }
     }
 
+  }
+
+  const trocarRefeicao = (periodoChecado, periodoNome, change, formValues) => {
+    if (!periodoChecado) return
+
+    const motivo = motivos.find(d => d.uuid == formValues.motivo)
+
+    if (!motivo) return
+
+    if (motivo.nome === 'Refeição por lanche') {
+      change(`${periodoNome}.alimentacao_de`, 'r01l22')
+      change(`${periodoNome}.alimentacao_para`, 'l03r44')
+    }
   }
 
   return (
@@ -83,6 +97,11 @@ export default Register => {
                       <option key={item.uuid} value={item.uuid}>{ item.nome }</option>
                     )}
                   </Field>
+                  <OnChange name="motivo">
+                    {(valueMotivo) => {
+                      atualizaRefeicao(valueMotivo, form.change, values)
+                    }}
+                  </OnChange>
 
                   <p>motivo: { motivo }</p>
 
@@ -97,7 +116,7 @@ export default Register => {
                         </Field>
                         <OnChange name={periodo.nome}>
                           {(valueCheckboxPeriodo, previous) => {
-                            trocarRefeicao(valueCheckboxPeriodo, form.change, values)
+                            trocarRefeicao(valueCheckboxPeriodo, periodo.nome, form.change, values)
                           }}
                         </OnChange>
                         {periodo.nome}
@@ -105,6 +124,7 @@ export default Register => {
                         <Field
                           name={`${periodo.nome}.alimentacao_de`}
                           component="select"
+                          disabled={false}
                         >
                           {alimentacaoDe.map(item => 
                             <option key={item.uuid} value={item.uuid}>{ item.nome }</option>

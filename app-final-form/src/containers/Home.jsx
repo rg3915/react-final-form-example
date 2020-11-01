@@ -22,7 +22,6 @@ const validate = () => {
 }
 
 export default Register => {
-
   const [weekday, setWeekday] = useState([])
   const [dia, setDia] = useState('')
 
@@ -35,7 +34,7 @@ export default Register => {
 
   const retornaDiaSemana = evt => {
     const dia = evt.target.value
-    const diaSemana = weekday.find(d => d.value == dia)
+    const diaSemana = weekday.find(d => d.value === dia)
     setDia(diaSemana.text)
   }
 
@@ -58,7 +57,6 @@ export default Register => {
                   <Field
                     name="weekday"
                     component="select"
-                    onChange={retornaDiaSemana}
                   >
                     {weekday.map(item => 
                       <option key={item.value} value={item.value}>{ item.text }</option>

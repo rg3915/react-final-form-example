@@ -1,5 +1,5 @@
 import './App.css';
-import Home from './containers/Home'
+import MyForm from './containers/MyForm'
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
         </a>
         <br/>
         <br/>
-        <Home />
+        <MyForm />
       </header>
     </div>
   );

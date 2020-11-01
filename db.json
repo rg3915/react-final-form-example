@@ -7,5 +7,23 @@
     { "value": 5, "text": "Quinta" },
     { "value": 6, "text": "Sexta" },
     { "value": 7, "text": "Sábado" }
+  ],
+  "motivos": [
+    { "uuid": "", "nome": "Outros" },
+    { "uuid": "r01l16", "nome": "Refeição por lanche" },
+    { "uuid": "l02r42", "nome": "Lanche por refeição" }
+  ],
+  "alimentacao": [
+    { "uuid": "", "nome": "Selecione" },
+    { "uuid": "r01l22", "nome": "Refeição" },
+    { "uuid": "l02r33", "nome": "Sobremesa" },
+    { "uuid": "l03r44", "nome": "Lanche" },
+    { "uuid": "l04r55", "nome": "Almoço" }
+  ],
+  "periodo": [
+    { "uuid": "p01l220", "nome": "MANHA" },
+    { "uuid": "p02r330", "nome": "TARDE" },
+    { "uuid": "p03r440", "nome": "NOITE" },
+    { "uuid": "p04r550", "nome": "INTEGRAL" }
   ]
 }

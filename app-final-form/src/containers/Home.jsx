@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Form, Field } from 'react-final-form'
+import { OnChange } from 'react-final-form-listeners'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -9,17 +10,6 @@ import Button from 'react-bootstrap/Button';
 import TextInput from '../components/TextInput'
 import SelectField from '../components/SelectField'
 
-
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-const onSubmit = async values => {
-  await sleep(300)
-  console.table(values);
-}
-
-const validate = () => {
-  //code here
-}
 
 export default Register => {
   const [weekday, setWeekday] = useState([])
@@ -32,9 +22,20 @@ export default Register => {
       })
   }, [])
 
-  const retornaDiaSemana = evt => {
-    const dia = evt.target.value
-    const diaSemana = weekday.find(d => d.value === dia)
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+  const onSubmit = async values => {
+    await sleep(300)
+    console.table(values);
+  }
+
+  const validate = () => {
+    //code here
+  }
+
+  const retornaDiaSemana = value => {
+    // value é o dia
+    const diaSemana = weekday.find(d => d.value == value)
     setDia(diaSemana.text)
   }
 
@@ -62,6 +63,11 @@ export default Register => {
                       <option key={item.value} value={item.value}>{ item.text }</option>
                     )}
                   </Field>
+                  <OnChange name="weekday">
+                    {(value, previous) => {
+                      retornaDiaSemana(value)
+                    }}
+                  </OnChange>
 
                   <p>Dia da semana: { dia }</p>
                 </div>

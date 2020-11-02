@@ -14,24 +14,17 @@ export default Register => {
   const [alimentacaoDe, setAlimentacaoDe] = useState([])
   const [alimentacaoPara, setAlimentacaoPara] = useState([])
   const [periodos, setPeriodos] = useState([])
-  const [habilita, setHabilita] = useState(true)
 
   useEffect(() => {
     axios.get('http://localhost:3000/motivos')
       .then(({ data }) => {
         setMotivos(data)
       })
-  }, [])
-
-  useEffect(() => {
     axios.get('http://localhost:3000/alimentacao')
       .then(({ data }) => {
         setAlimentacaoDe(data)
         setAlimentacaoPara(data)
       })
-  }, [])
-
-  useEffect(() => {
     axios.get('http://localhost:3000/periodo')
       .then(({ data }) => {
         setPeriodos(data)
@@ -60,36 +53,49 @@ export default Register => {
     }
   }
 
-  const atualizaRefeicao = (valueMotivo, change, formValues) => {
-    const motivo = motivos.find(d => d.uuid === valueMotivo)
+  const onChangeMotivo = (uuidMotivo, change, formValues) => {
+    const motivo = motivos.find(d => d.uuid === uuidMotivo)
     const refeicao = alimentacaoDe.find(v => v.nome === 'Refeição')
     const lanche = alimentacaoDe.find(v => v.nome === 'Lanche')
 
     for (let periodo of periodos) {
-      if (formValues[periodo.nome]) {
+      const periodoChecado = formValues[periodo.nome]
+      if (periodoChecado) {
         mudaRefeicao(motivo.nome, periodo.nome, change, refeicao, lanche)
       }
     }
 
   }
 
-  const trocarRefeicao = (periodoChecado, periodoNome, change, formValues) => {
+  const onChangeCheckboxPeriodo = (periodoChecado, periodoNome, change, formValues) => {
 
-      if (periodoChecado) {
-        setHabilita(false)
-      } else {
-        setHabilita(true)
-      }
-
-    // if (!periodoChecado) return
+    if (!periodoChecado) return
 
     const motivo = motivos.find(d => d.uuid === formValues.motivo)
+
     if (!motivo) return
 
     const refeicao = alimentacaoDe.find(v => v.nome === 'Refeição')
     const lanche = alimentacaoDe.find(v => v.nome === 'Lanche')
 
     mudaRefeicao(motivo.nome, periodoNome, change, refeicao, lanche)
+  }
+
+  const deveDesabilitarSeletorDeAlimentacao = (periodoNome, formValues) => {
+    const periodoChecado = formValues[periodoNome]
+    if (!periodoChecado) return true
+
+    const motivoSelecionado = motivos.find(d => d.uuid === formValues.motivo)
+
+    if (motivoSelecionado === undefined) return false
+
+    if (
+      motivoSelecionado.nome === 'Refeição por lanche' ||
+      motivoSelecionado.nome === 'Lanche por refeição'
+    ) {
+      return true
+    }
+    return false
   }
 
   return (
@@ -101,6 +107,7 @@ export default Register => {
             validate={validate}
             render={({ handleSubmit, values, form }) => (
               <form onSubmit={handleSubmit}>
+                <pre style={{color: "white"}}>{JSON.stringify(values, null, 4)}</pre>
                 <h2>Simple Default Input</h2>
                 <div>
                   <Field
@@ -113,7 +120,7 @@ export default Register => {
                   </Field>
                   <OnChange name="motivo">
                     {(valueMotivo) => {
-                      atualizaRefeicao(valueMotivo, form.change, values)
+                      onChangeMotivo(valueMotivo, form.change, values)
                     }}
                   </OnChange>
 
@@ -130,7 +137,7 @@ export default Register => {
                         </Field>
                         <OnChange name={periodo.nome}>
                           {(valueCheckboxPeriodo, previous) => {
-                            trocarRefeicao(valueCheckboxPeriodo, periodo.nome, form.change, values)
+                            onChangeCheckboxPeriodo(valueCheckboxPeriodo, periodo.nome, form.change, values)
                           }}
                         </OnChange>
                         {periodo.nome}
@@ -138,7 +145,7 @@ export default Register => {
                         <Field
                           name={`${periodo.nome}.alimentacao_de`}
                           component="select"
-                          disabled={habilita}
+                          disabled={deveDesabilitarSeletorDeAlimentacao(periodo.nome, values)}
                         >
                           {alimentacaoDe.map(item => 
                             <option key={item.uuid} value={item.uuid}>{ item.nome }</option>
@@ -148,7 +155,7 @@ export default Register => {
                         <Field
                           name={`${periodo.nome}.alimentacao_para`}
                           component="select"
-                          disabled={habilita}
+                          disabled={deveDesabilitarSeletorDeAlimentacao(periodo.nome, values)}
                         >
                           {alimentacaoPara.map(item => 
                             <option key={item.uuid} value={item.uuid}>{ item.nome }</option>

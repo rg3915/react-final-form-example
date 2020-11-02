@@ -7,9 +7,6 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button';
 
-import TextInput from '../components/TextInput'
-import SelectField from '../components/SelectField'
-
 
 export default Register => {
   const [motivos, setMotivos] = useState([])
@@ -17,6 +14,7 @@ export default Register => {
   const [alimentacaoDe, setAlimentacaoDe] = useState([])
   const [alimentacaoPara, setAlimentacaoPara] = useState([])
   const [periodos, setPeriodos] = useState([])
+  const [habilita, setHabilita] = useState(true)
 
   useEffect(() => {
     axios.get('http://localhost:3000/motivos')
@@ -56,14 +54,14 @@ export default Register => {
       change(`${periodoNome}.alimentacao_de`, refeicao.uuid)
       change(`${periodoNome}.alimentacao_para`, lanche.uuid)
     }
-    if (motivoNome === 'Lanche por refeição') {
+    else if (motivoNome === 'Lanche por refeição') {
       change(`${periodoNome}.alimentacao_de`, lanche.uuid)
       change(`${periodoNome}.alimentacao_para`, refeicao.uuid)
     }
   }
 
   const atualizaRefeicao = (valueMotivo, change, formValues) => {
-    const motivo = motivos.find(d => d.uuid == valueMotivo)
+    const motivo = motivos.find(d => d.uuid === valueMotivo)
     const refeicao = alimentacaoDe.find(v => v.nome === 'Refeição')
     const lanche = alimentacaoDe.find(v => v.nome === 'Lanche')
 
@@ -76,9 +74,16 @@ export default Register => {
   }
 
   const trocarRefeicao = (periodoChecado, periodoNome, change, formValues) => {
-    if (!periodoChecado) return
 
-    const motivo = motivos.find(d => d.uuid == formValues.motivo)
+      if (periodoChecado) {
+        setHabilita(false)
+      } else {
+        setHabilita(true)
+      }
+
+    // if (!periodoChecado) return
+
+    const motivo = motivos.find(d => d.uuid === formValues.motivo)
     if (!motivo) return
 
     const refeicao = alimentacaoDe.find(v => v.nome === 'Refeição')
@@ -133,7 +138,7 @@ export default Register => {
                         <Field
                           name={`${periodo.nome}.alimentacao_de`}
                           component="select"
-                          disabled={false}
+                          disabled={habilita}
                         >
                           {alimentacaoDe.map(item => 
                             <option key={item.uuid} value={item.uuid}>{ item.nome }</option>
@@ -143,6 +148,7 @@ export default Register => {
                         <Field
                           name={`${periodo.nome}.alimentacao_para`}
                           component="select"
+                          disabled={habilita}
                         >
                           {alimentacaoPara.map(item => 
                             <option key={item.uuid} value={item.uuid}>{ item.nome }</option>
